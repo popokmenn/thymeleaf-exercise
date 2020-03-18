@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html layout:decorate="~{base}" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org">
+
+<div class="content-wrapper" layout:fragment="content-header">
+	<section class="content-header">
+		<div class="container-fluid">
+			<div class="row mb-2">
+				<div class="col-sm-6">
+					<h1>General Form</h1>
+				</div>
+				<div class="col-sm-6">
+					<ol class="breadcrumb float-sm-right">
+						<li class="breadcrumb-item"><a href="#">Home</a></li>
+						<li class="breadcrumb-item active">General Form</li>
+					</ol>
+				</div>
+			</div>
+		</div><!-- /.container-fluid -->
+	</section>
+
+	<section class="content" layout:fragment="content-body">
+		<div class="container-fluid">
+			<div class="row">
+				<div class="col-md-12">
+					<div class="card card-info">
+						<div class="card-header">
+							<h3 class="card-title">Form latihan 1</h3>
+						</div>
+						<!-- /.card-header -->
+						<!-- form start -->
+						<form role="form">
+							<div class="card-body">
+								<div class="row">
+									<div class="col-md-6">
+										<div class="form-group">
+											<label for="fullname">Fullname</label>
+											<input type="text" class="form-control" id="fullname" name="fullname"
+												placeholder="Enter your name">
+										</div>
+
+										<div class="form-group">
+											<label for="address">Address</label>
+											<input type="text" class="form-control" id="address" name="address"
+												placeholder="Enter your address">
+										</div>
+
+										<div class="form-group">
+											<label for="email">Email</label>
+											<input type="text" class="form-control" id="email" name="email"
+												placeholder="Enter your email">
+										</div>
+									</div>
+
+									<div class="col-md-6">
+										<label for="email">Hobi</label>
+										<div class="row">
+											<div class="col-md-6">
+												<div class="custom-control custom-checkbox">
+													<input type="checkbox" class="custom-control-input" name="cekbok"
+														id="cekBok1" value=" Bermain rental PS">
+													<label class="custom-control-label" for="cekBok1">Bermain rental
+														PS</label>
+												</div>
+
+												<div class="custom-control custom-checkbox">
+													<input type="checkbox" class="custom-control-input" name="cekbok"
+														id="cekBok2" value=" Memakan ketoprak">
+													<label class="custom-control-label" for="cekBok2">Memakan
+														ketoprak</label>
+												</div>
+											</div>
+
+											<div class="col-md-6">
+												<div class="custom-control custom-checkbox">
+													<input type="checkbox" class="custom-control-input" name="cekbok"
+														id="cekBok3" value=" Menutup pintu">
+													<label class="custom-control-label" for="cekBok3">Menutup
+														pintu</label>
+												</div>
+
+												<div class="custom-control custom-checkbox">
+													<input type="checkbox" class="custom-control-input" name="cekbok"
+														id="cekBok4" value=" Menghapus papan tulis">
+													<label class="custom-control-label" for="cekBok4">Menghapus
+														papan tulis</label>
+												</div>
+											</div>
+										</div>
+
+										<br>
+										<div class="col-md-6">
+											<!-- radio -->
+											<label for="customRadio">Jenis Kelamin</label>
+											<div class="form-group">
+												<div class="custom-control custom-radio">
+													<input class="custom-control-input" type="radio" id="customRadio1"
+														name="customRadio">
+													<label for="customRadio1" class="custom-control-label">Custom
+														Radio</label>
+												</div>
+												<div class="custom-control custom-radio">
+													<input class="custom-control-input" type="radio" id="customRadio2"
+														name="customRadio" checked>
+													<label for="customRadio2" class="custom-control-label">Custom
+														Radio checked</label>
+												</div>
+											</div>
+										</div>
+									</div>
+
+								</div>
+							</div>
+
+							<!-- /.card-body -->
+							<div class="card-footer">
+								<div class="row">
+									<button type="button" onclick="addRow()" class="btn btn-primary">Submit</button>
+									<button style="margin-left: 20px;" type="button" id="btnIsi"
+										class="btn btn-success">Autofill</button>
+									<button style="margin-left: 20px;" type="button" onclick="reset()"
+										class="btn btn-danger"><i class="fas fa-power-off"></i></button>
+								</div>
+							</div>
+
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<!-- 	<div class="content">
+		<div class="container-fluid">
+			<div class="row">
+				<div class="col-12">
+					<div class="card">
+						<div class="card-header">
+							<h3 class="card-title">Responsive Hover Table</h3>
+
+							<div class="card-tools">
+								<div class="input-group input-group-sm" style="width: 150px;">
+									<input type="text" name="table_search" class="form-control float-right"
+										placeholder="Search">
+
+									<div class="input-group-append">
+										<button type="submit" class="btn btn-default"><i
+												class="fas fa-search"></i></button>
+									</div>
+								</div>
+							</div>
+						</div>
+						/.card-header
+						<div class="card-body table-responsive p-0">
+							<table name="form-table" class="table table-hover text-nowrap">
+								<thead>
+									<tr>
+										<th>Name</th>
+										<th>Address</th>
+										<th>Email</th>
+										<th>Hobbies</th>
+										<th>Delete</th>
+									</tr>
+								</thead>
+								<tbody id="form-table">
+									<tr>
+										<td>Naufal Retyan</td>
+										<td>South Jakarta</td>
+										<td>naufal.retyan@gmail.com</td>
+										<td>Coding, Design</td>
+										<td><button type="button" class="btn btn-danger btn-sm"
+												onclick="modalUtil(this)"><i class="fas fa-trash"></i></button>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+						/.card-body
+					</div>
+					/.card
+				</div>
+			</div>
+		</div>
+	</div> -->
+
+	<div class="content">
+		<div class="container-fluid">
+			<div class="row">
+				<div class="col-12">
+					<div class="card">
+						<div class="card-header">
+							<h3 class="card-title">List Biodata</h3>
+						</div>
+						<!-- /.card-header -->
+						<div class="card-body">
+							<table class="table table-striped table-bordered table-hover nowrap" id="tableBiodata"
+								style="width:100%"></table>
+						</div>
+						<!-- /.card-body -->
+					</div>
+					<!-- /.card -->
+				</div>
+				<!-- /.col -->
+			</div>
+		</div>
+	</div>
+
+	<div class="modal fade" id="modal-default">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h4 class="modal-title">Delete</h4>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
+					<p>Confirm Delete Row?</p>
+				</div>
+				<div class="modal-footer justify-content-between">
+					<button type="button" class="btn btn-danger" onClick="deleteRow()"
+						data-dismiss="modal">Delete</button>
+					<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+				</div>
+			</div>
+			<!-- /.modal-content -->
+		</div>
+		<!-- /.modal-dialog -->
+	</div>
+	<!-- /.modal -->
+
+</div>
+
+</html>
