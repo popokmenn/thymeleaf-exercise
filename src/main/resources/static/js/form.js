@@ -1,6 +1,259 @@
 var Toast;
 var count;
 var currentIndex;
+var kotaKabId;
+var editObj;
+
+var tableBiodata = {
+	create: function () {
+		// jika table tersebut datatable, maka clear and dostroy
+		if ($.fn.DataTable.isDataTable('#tableBiodata')) {
+			//table yg sudah dibentuk menjadi datatable harus d rebuild lagi untuk di instantiasi ulang
+			$('#tableBiodata').DataTable().clear();
+			$('#tableBiodata').DataTable().destroy();
+		}
+
+		$.ajax({
+			url: '/get-all',
+			method: 'get',
+			contentType: 'application/json',
+			success: function (res, status, xhr) {
+				if (xhr.status == 200 || xhr.status == 201) {
+					$('#tableBiodata').DataTable({
+						data: res,
+						columns: [
+							{
+								title: "Nama",
+								data: "name"
+							},
+							{
+								title: "Email",
+								data: "email"
+							},
+							{
+								title: "Kota/Kabupaten",
+								data: "kota"
+							},
+							{
+								title: "Provinsi",
+								data: "nmProvinsi"
+							},
+							{
+								title: "Action",
+								data: null,
+								render: function (data, type, row) {
+									return '<button type="button" class="btn btn-danger" onClick="formBiodata.deleteForm(' + data.id + ')">Delete</button> <button type="button" class="btn btn-success" id="btnEdit" onClick="formBiodata.loadToForm(' + data.id + ')">Edit</button>';
+								}
+							}
+						],
+						"scrollX": true
+					});
+				}
+			},
+			error: function (err) {
+				console.log(err);
+			}
+		});
+	}
+};
+
+var formBiodata = {
+
+	resetForm: function () {
+		$('#form-home')[0].reset();
+	},
+
+	saveForm: function () {
+		if ($('#form-home').parsley().validate()) {
+			var kotaDetail = {
+				idKota: $("#selectID option:selected").attr('id'),
+				idProvinsi: $("#provinsiSelect option:selected").attr('id')
+				//kota: $('#selectID').find(":selected").text()
+			}
+
+			var provinsiDetail = {
+				id: $("#provinsiSelect option:selected").attr('id')
+			}
+
+			var homeModel = {
+				name: document.getElementById('fullname').value,
+				email: document.getElementById('email').value,
+				kota: kotaDetail,
+				provinsi: provinsiDetail
+			}
+			console.log(JSON.stringify(homeModel));
+
+			$.ajax({
+				url: '/save',
+				method: 'POST',
+				contentType: 'application/json',
+				dataType: 'json',
+				data: JSON.stringify(homeModel),
+				success: function (res, status, xhr) {
+					if (xhr.status == 200 || xhr.status == 201) {
+						tableBiodata.create();
+						clearForm();
+					}
+				},
+				error: function (err) {
+					console.log(err);
+				}
+			});
+		}
+	},
+
+	deleteForm: function (id) {
+		console.log(id);
+		$.ajax({
+			url: '/api/' + id,
+			type: 'DELETE',
+			success: function (result) {
+				tableBiodata.create();
+			},
+			error: function (xhr, status, error) {
+				console.log(xhr.responseText);
+			}
+		});
+	},
+
+	loadToForm: function (id) {
+		formBiodata.resetForm();
+
+		$.ajax({
+			url: '/api/' + id,
+			method: 'GET',
+			contentType: 'application/json',
+			dataType: 'json',
+			success: function (res, status, xhr) {
+				if (xhr.status == 200 || xhr.status == 201) {
+					var obj = res;
+					$('#form-home').parsley().reset();
+					$('#id').val(obj.id);
+					$('#email').val(obj.email);
+					$('#fullname').val(obj.name);
+					$('#email').val(obj.email);
+					console.log(obj.idKota);
+
+					populateCombo.getAllKota(obj.idProvinsi, obj.idKota);
+
+				}
+			},
+			error: function (err) {
+				console.log(err);
+			}
+		});
+	}
+}
+
+var updateForm = {
+	editForm: function () {
+		var homeDetail = {
+			id: $("#selectID option:selected").attr('id'),
+			kota: $('#selectID').find(":selected").text()
+		}
+
+		var homeModel = {
+			id: parseInt(document.getElementById('id').value),
+			name: document.getElementById('fullname').value,
+			email: document.getElementById('email').value,
+			detailModel: homeDetail
+		}
+		console.log(homeModel);
+
+		$.ajax({
+			url: '/api/' + homeDetail.id,
+			method: 'PUT',
+			contentType: 'application/json',
+			dataType: 'json',
+			data: JSON.stringify(homeModel),
+			success: function (res, status, xhr) {
+				if (xhr.status == 200 || xhr.status == 201) {
+					tableBiodata.create();
+					clearForm();
+				} else {
+
+				}
+			},
+			error: function (err) {
+				console.log(err);
+			}
+		});
+	}
+}
+
+var populateCombo = {
+	getAllKota: function (idProvinsi, idKota) {
+		$.ajax({
+			url: '/kota/' + idProvinsi,
+			method: 'get',
+			contentType: 'application/json',
+			success: function (res, status, xhr) {
+				//console.log(res);
+				var dynamicSelect = document.getElementById("selectID");
+				$('#selectID').find('option').remove();
+				var firstOption = document.createElement("option");
+				firstOption.setAttribute("id", 0);
+				firstOption.text = "-- Pilih Kota / Kabupaten --";//item.whateverProperty
+				dynamicSelect.add(firstOption);
+
+				$('#outerDiv').find('div').remove();
+				var cardColor = ["info", "success", "warning", "danger"];
+				var i = 0;
+
+				res.forEach(element => {
+					//console.log(element)
+					var newOption = document.createElement("option");
+					newOption.setAttribute("id", element.idKota);
+					newOption.text = element.kota;//item.whateverProperty
+					dynamicSelect.add(newOption);
+
+					if (i >= cardColor.length) {
+						i = 0;
+					} else {
+						createShopCard(element.kota, cardColor[i]);
+						i++;
+					}
+
+				});
+
+				if (idKota > 0) {
+					$("#selectID option[id=" + idKota + "]").attr("selected", "selected");
+					$("#provinsiSelect option[id=" + idProvinsi + "]").attr("selected", "selected");
+				}
+			},
+			error: function (err) {
+				console.log(err);
+			}
+		});
+	},
+
+	getAllProvinsi: function () {
+		$.ajax({
+			url: '/provinsi/all',
+			method: 'get',
+			contentType: 'application/json',
+			success: function (res, status, xhr) {
+				//console.log(res);
+				var dynamicSelect = document.getElementById("provinsiSelect");
+				res.forEach(element => {
+					//console.log(element)
+					var newOption = document.createElement("option");
+					newOption.setAttribute("id", element.id);
+					newOption.text = element.nmProvinsi;//item.whateverProperty
+					dynamicSelect.add(newOption);
+				});
+			},
+			error: function (err) {
+				console.log(err);
+			}
+		});
+	}
+}
+
+$('#provinsiSelect').change(function () {
+	var idProv = $("#provinsiSelect option:selected").attr('id');
+	populateCombo.getAllKota(idProv, 0);
+});
 
 function test() {
 	console.log("called");
@@ -23,7 +276,7 @@ function addRow() {
 		row.insertCell(1).innerHTML = address.value
 		row.insertCell(2).innerHTML = email.value;
 		row.insertCell(3).innerHTML = filteredHobbies;
-		row.insertCell(4).innerHTML = '<td><button onclick="modalUtil(this)" type="button" class="btn btn-danger btn-sm"><i class="fas fa-trash"></i></button></tr>'
+		row.insertCell(4).innerHTML = '<td><button onclick="modalUtil(this)" type="button" class="btn btn-danger btn-sm"><i class="fas fa-trash"></i></button></tr>';
 
 		Toast.fire({
 			type: 'success',
@@ -37,6 +290,100 @@ function addRow() {
 			title: 'Form is incomplete'
 		});
 	}
+}
+
+$('#btnIsi').click(function () {
+	$.ajax({
+		url: '/get',
+		method: 'get',
+		contentType: 'application/json',
+		success: function (res, status, xhr) {
+			$('#fullname').val(res.name);
+			$('#email').val(res.email);
+			$('#address').val(res.detailModel.alamat);
+			loadToCheckBox(res.detailModel.hobi);
+		},
+		error: function (err) {
+			console.log(err);
+		}
+	});
+})
+
+
+$('#btn-save').click(function () {
+	$('#form-home').parsley();
+	var id = document.getElementById("id").value;
+	if (id > 0) {
+		updateForm.editForm();
+	} else {
+		formBiodata.saveForm();
+	}
+})
+
+// $(function () {
+// 	$('#btn-save').parsley().on('field:validated', function () {
+// 		var ok = $('.parsley-error').length === 0;
+// 		$('.bs-callout-info').toggleClass('hidden', !ok);
+// 		$('.bs-callout-warning').toggleClass('hidden', ok);
+// 	})
+// 		.on('form:submit', function () {
+// 			var id = document.getElementById("id").value;
+// 			if (id > 0) {
+// 				updateForm.editForm();
+// 			} else {
+// 				formBiodata.saveForm();
+// 			}
+// 		});
+// });
+
+function deleteRow() {
+	var table = document.getElementById("form-table");
+	table.deleteRow(currentIndex - 1);
+}
+
+
+function clearForm() {
+	formBiodata.resetForm();
+	$('#form-home').parsley().reset();
+	document.getElementById('id').value = 0;
+	document.getElementById('fullname').value = '';
+	document.getElementById('email').value = '';
+	$('#selectID').prop('selectedIndex', 0);
+	$('#provinsiSelect').prop('selectedIndex', 0);
+	$("#cekBok4").prop("checked", false);
+	$("#cekBok1").prop("checked", false);
+	$("#cekBok2").prop("checked", false);
+	$("#cekBok3").prop("checked", false);
+
+}
+
+
+function isEmpty(str) {
+	return (!str || 0 === str.length);
+}
+
+
+function modalUtil(obj) {
+	currentIndex = obj.parentNode.parentNode.rowIndex;
+	$('#modal-info').modal('show');
+}
+
+function loadToCheckBox(hobbies) {
+	var cekbokNum = 1;
+	var hobbieIndx = 0;
+	for (let index = 0; index < hobbies.length; index++) {
+		if (hobbies[hobbieIndx] == document.getElementById("cekBok" + cekbokNum).value) {
+			document.getElementById("cekBok" + cekbokNum).checked = true;
+			console.log(hobbies[hobbieIndx]);
+			hobbieIndx++;
+			cekbokNum = 0;
+		}
+		cekbokNum++;
+	}
+}
+
+function deleteRow() {
+	console.log('clicked');
 }
 
 function getWord() {
@@ -70,112 +417,50 @@ function getWord() {
 	return fixedCb;
 }
 
-function deleteRow() {
-	var table = document.getElementById("form-table");
-	table.deleteRow(currentIndex - 1);
+function createShopCard(namaKota, btnColor) {
+
+	var colDiv = document.createElement('div');
+	colDiv.className = 'col-lg-3 col-6';
+
+	var smallBoxDiv = document.createElement('div');
+	smallBoxDiv.className = 'small-box bg-' + btnColor;
+
+	var iconDiv = document.createElement('div');
+	iconDiv.className = 'icon';
+
+	var icon = document.createElement('i');
+	icon.className = 'fas fa-shopping-cart';
+
+	var inner = document.createElement('div');
+	inner.className = 'inner';
+
+	var innerH3 = document.createElement('h3');
+	innerH3.textContent = "Kota";
+
+	var innerP = document.createElement('p');
+	innerP.textContent = namaKota;
+
+	var footer = document.createElement('a');
+	footer.className = 'small-box-footer';
+	footer.textContent = 'More Info ';
+
+	var footerBtn = document.createElement('i');
+	footerBtn.className = 'fas fa-arrow-circle-right';
+	footer.appendChild(footerBtn);
+
+	inner.appendChild(innerH3);
+	inner.appendChild(innerP);
+
+	smallBoxDiv.appendChild(iconDiv).appendChild(icon);
+	smallBoxDiv.appendChild(inner)
+	smallBoxDiv.appendChild(footer);
+	document.getElementById("outerDiv").appendChild(colDiv).appendChild(smallBoxDiv);
 }
-
-function clearForm() {
-	document.getElementById('fullname').value = '';
-	document.getElementById('email').value = '';
-	document.getElementById('address').value = '';
-	$("#cekBok4").prop("checked", false);
-	$("#cekBok1").prop("checked", false);
-	$("#cekBok2").prop("checked", false);
-	$("#cekBok3").prop("checked", false);
-
-}
-
-function isEmpty(str) {
-	return (!str || 0 === str.length);
-}
-
-function modalUtil(obj) {
-	currentIndex = obj.parentNode.parentNode.rowIndex;
-	$('#modal-default').modal('show');
-}
-
-function createTableBiodata() {
-	$.ajax({
-		url: '/get-all',
-		method: 'get',
-		contentType: 'application/json',
-		success: function (res, status, xhr) {
-			if (xhr.status == 200 || xhr.status == 201) {
-				$('#tableBiodata').DataTable({
-					data: res,
-					columns: [
-						{
-							title: "Nama",
-							data: "name"
-						},
-						{
-							title: "Email",
-							data: "email"
-						},
-						{
-							title: "Alamat",
-							data: "detailModel.alamat"
-						},
-						{
-							title: "Hobi",
-							data: "detailModel.hobi"
-						},
-						{
-							title: "Tanggal",
-							data: "detailModel.tanggal"
-						}
-					],
-					"scrollX": true
-				});
-
-			} else {
-
-			}
-		},
-		error: function (err) {
-			console.log(err);
-		}
-	});
-}
-
-function loadToCheckBox(hobbies) {
-	var cekbokNum = 1;
-	var hobbieIndx = 0;
-	for (let index = 0; index < hobbies.length; index++) {
-		if (hobbies[hobbieIndx] == document.getElementById("cekBok" + cekbokNum).value) {
-			document.getElementById("cekBok" + cekbokNum).checked = true;
-			console.log(hobbies[hobbieIndx]);
-			
-
-			hobbieIndx++;
-			cekbokNum = 0;
-		}
-		cekbokNum++;
-	}
-}
-
-$('#btnIsi').click(function () {
-	$.ajax({
-		url: '/get',
-		method: 'get',
-		contentType: 'application/json',
-		success: function (res, status, xhr) {
-			$('#fullname').val(res.name);
-			$('#email').val(res.email);
-			//$('#cekbok').val([res.detailModel.hobi);
-			$('#address').val(res.detailModel.alamat);
-			//console.log(res.detailModel.hobi);
-			loadToCheckBox(res.detailModel.hobi);
-		},
-		erorrr: function (err) {
-			console.log(err);
-		}
-	});
-})
 
 $(document).ready(function () {
-	createTableBiodata()
+	tableBiodata.create();
+	populateCombo.getAllProvinsi();
+	//createShopCard();
 	Toast = Swal.mixin({
 		toast: true,
 		position: 'top-end',

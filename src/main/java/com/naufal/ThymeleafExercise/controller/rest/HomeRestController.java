@@ -1,72 +1,109 @@
 package com.naufal.ThymeleafExercise.controller.rest;
 
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
-import com.naufal.ThymeleafExercise.model.HomeDetailModel;
-import com.naufal.ThymeleafExercise.model.HomeModel;
+import javax.validation.Valid;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.naufal.ThymeleafExercise.Repository.HomeRepository;
+import com.naufal.ThymeleafExercise.Repository.KotaRepository;
+import com.naufal.ThymeleafExercise.dto.HomeDto;
+import com.naufal.ThymeleafExercise.model.HomeModel;
+import com.naufal.ThymeleafExercise.model.Kota;
+
 @RestController
 public class HomeRestController {
 
+	@Autowired
+	private HomeRepository homeRepository;
+
+	@Autowired
+	private KotaRepository homeDetailRepository;
+
 	@RequestMapping(value = "/get-all", method = RequestMethod.GET)
-	public List<HomeModel> getAllBiodata() {
-		String[] hobiArr = new String[4];
-		hobiArr[2] = " Menutup pintu";
-		hobiArr[3] = " Bermain rental PS";
+	public List<HomeDto> getAllBiodata() {
+		List<HomeModel> homeModels = homeRepository.findAll();
+		List<HomeDto> biodataDtos = new ArrayList<>();
 
-		HomeModel homeModel = new HomeModel();
-		HomeDetailModel detailModel = new HomeDetailModel();
-		homeModel.setName("Naufal Popokmen");
-		homeModel.setEmail("gmail@naufal.com");
-		detailModel.setAlamat("Griya Praweda");
-		detailModel.setHobi(hobiArr);
-		detailModel.setTanggal(dateFromLocalDate("17/09/2000"));
-		homeModel.setDetailModel(detailModel);
+		for (int i = 0; i < homeModels.size(); i++) {
+			HomeDto homeDto = new HomeDto();
+			homeDto.setId(homeModels.get(i).getId());
+			homeDto.setEmail(homeModels.get(i).getEmail());
+			homeDto.setName(homeModels.get(i).getName());
+			homeDto.setKota(homeModels.get(i).getKota().getKota());
+			homeDto.setIdKota(homeModels.get(i).getKota().getIdKota());
+			homeDto.setNmProvinsi(homeModels.get(i).getProvinsi().getNmProvinsi());
+			homeDto.setIdProvinsi(homeModels.get(i).getProvinsi().getId());
+			biodataDtos.add(homeDto);
+		}
 
-		HomeModel homeModel2 = new HomeModel();
-		homeModel2.setName("Nopel");
-		homeModel2.setEmail("@naufal.com");
-		homeModel2.setDetailModel(detailModel);
-
-		List<HomeModel> homeModels = new ArrayList<>();
-		homeModels.add(homeModel);
-		homeModels.add(homeModel2);
-
-		return homeModels;
+		return biodataDtos;
 	}
 
-	@RequestMapping(value = "/get", method = RequestMethod.GET)
-	public HomeModel getBiodata() {
-		String[] hobiArr = new String[4];
-		hobiArr[0] = " Menutup pintu";
-		hobiArr[1] = " Bermain rental PS";
+	@GetMapping(value = "/get-all-kota")
+	private List<Kota> getAllKota() {
+		List<Kota> detailModels = homeDetailRepository.findAll();
+		return detailModels;
+	}
 
-		HomeModel homeModel = new HomeModel();
-		HomeDetailModel detailModel = new HomeDetailModel();
-		homeModel.setName("Naufal Popokmen");
-		homeModel.setEmail("gmail@naufal.com");
-		detailModel.setAlamat("Griya Praweda");
-		detailModel.setHobi(hobiArr);
-		detailModel.setTanggal(dateFromLocalDate("17/09/2000"));
-		homeModel.setDetailModel(detailModel);
+	@GetMapping(value = "/api/{idHome}")
+	private HomeDto getById(@PathVariable(value = "idHome") Long id) {
+		HomeModel homeModel = homeRepository.findById(id).get();
+		HomeDto dto = new HomeDto();
+		dto.setEmail(homeModel.getEmail());
+		dto.setId(homeModel.getId());
+		dto.setName(homeModel.getName());
+		dto.setIdKota(homeModel.getKota().getIdKota());
+		dto.setKota(homeModel.getKota().getKota());
+		dto.setIdProvinsi(homeModel.getProvinsi().getId());
+		dto.setNmProvinsi(homeModel.getProvinsi().getNmProvinsi());
 
+		return dto;
+	}
+
+	@PostMapping(value = "/save")
+	public HomeModel saveAndUpdateHome(@RequestBody HomeModel homeModel) {
+		homeRepository.save(homeModel);
 		return homeModel;
 	}
 
-	private Date dateFromLocalDate(String myDate) {
-		final String myPattern = "dd/MM/yyyy";
-		DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(myPattern);
-		LocalDate localDate = LocalDate.parse(myDate, dateTimeFormatter);
-
-		return java.sql.Date.valueOf(localDate);
+	@PutMapping(value = "/api/{idHome}")
+	private HomeModel edit(@PathVariable(value = "idHome") Long id, @Valid @RequestBody HomeModel homeModel) {
+		return homeRepository.save(homeModel);
 	}
+
+	@DeleteMapping(value = "/api/{idHome}")
+	private void delete(@PathVariable("idHome") Long id) {
+		homeRepository.deleteById(id);
+	}
+
+	/*
+	 * private Date dateFromLocalDate(String myDate) { final String myPattern =
+	 * "dd/MM/yyyy"; DateTimeFormatter dateTimeFormatter =
+	 * DateTimeFormatter.ofPattern(myPattern); LocalDate localDate =
+	 * LocalDate.parse(myDate, dateTimeFormatter);
+	 * 
+	 * return java.sql.Date.valueOf(localDate); }
+	 */
+
+	// private HomeDto convertToDto(HomeModel home) {
+	// HomeDto homeDto = modelMapper.map(home, HomeDto.class);
+	// HomeDetailModel homeDetailDto = modelMapper.map(home.getDetailModel(),
+	// HomeDetailModel.class);
+	// BeanUtils.copyProperties(homeDetailDto, homeDto);
+
+	// return homeDto;
+	// }
 
 }

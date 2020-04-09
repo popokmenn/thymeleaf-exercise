@@ -1,104 +1,144 @@
 <!DOCTYPE html>
-<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      xmlns:th="http://www.thymeleaf.org">
-	<head>
-		<title>Dashboard</title>
-		<meta charset="utf-8">
-		<meta http-equiv="X-UA-Compatible" content="IE=edge">
-		<title>AdminLTE 3 | Dashboard</title>
-		<!-- Tell the browser to be responsive to screen width -->
-		<meta name="viewport" content="width=device-width, initial-scale=1">
-		<!-- Font Awesome -->
-		<link rel="stylesheet" th:href="@{/plugins/fontawesome-free/css/all.min.css}">
-		<!-- Ionicons -->
-		<link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
-		<!-- Tempusdominus Bbootstrap 4 -->
-		<link rel="stylesheet" th:href="@{/plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css}">
-		<!-- iCheck -->
-		<link rel="stylesheet" href="plugins/icheck-bootstrap/icheck-bootstrap.min.css">
-		<!-- JQVMap -->
-		<link rel="stylesheet" href="plugins/jqvmap/jqvmap.min.css">
-		<!-- Theme style -->
-		<link rel="stylesheet" href="dist/css/adminlte.min.css">
-		<!-- overlayScrollbars -->
-		<link rel="stylesheet" href="plugins/overlayScrollbars/css/OverlayScrollbars.min.css">
-		<!-- Daterange picker -->
-		<link rel="stylesheet" href="plugins/daterangepicker/daterangepicker.css">
-		<!-- summernote -->
-		<link rel="stylesheet" href="plugins/summernote/summernote-bs4.css">
-		<!-- Google Font: Source Sans Pro -->
-		<link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
-		<!-- SweetAlert2 -->
-  		<link rel="stylesheet" href="../../plugins/sweetalert2-theme-bootstrap-4/bootstrap-4.min.css">
-	</head>
-	
-	<body class="hold-transition sidebar-mini layout-fixed">
-		<div class="wrapper">
-			
-			<!-- Main Sidebar Container -->
-    		<th:block layout:replace="~{fragment/sidebar}"></th:block>	
-    		
-    		<!-- Navbar Container -->
-    		<th:block layout:replace="~{fragment/navbar}"></th:block>	
-		    
-		    <div layout:fragment="content-header"/>
-		    <div layout:fragment="content-body"/>
-    		
-    		<!-- <!-- Main content Container -->
-    		<th:block layout:replace="~{content/form}"></th:block>
-    		
-    		<!-- Footer Container -->
-    		<th:block layout:replace="~{fragment/footer}"></th:block>
-    		
-		</div>
-	</body>
-	
-	<!-- jQuery -->
-	<script src="plugins/jquery/jquery.min.js"></script>
-	<!-- jQuery UI 1.11.4 -->
-	<script src="plugins/jquery-ui/jquery-ui.min.js"></script>
-	<!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
-	<script>
-		$.widget.bridge('uibutton', $.ui.button)
-	</script>
-	<!-- Bootstrap 4 -->
-	<script src="plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
-	<!-- ChartJS -->
-	<!-- <script src="plugins/chart.js/Chart.min.js"></script> -->
-	<!-- Sparkline -->
-	<script src="plugins/sparklines/sparkline.js"></script>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<title>Dashboard</title>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>AdminLTE 3 | Dashboard</title>
+	<!-- Tell the browser to be responsive to screen width -->
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<!-- Font Awesome -->
+	<link rel="stylesheet" th:href="@{/plugins/fontawesome-free/css/all.min.css}">
+	<!-- Ionicons -->
+	<link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+	<!-- Tempusdominus Bbootstrap 4 -->
+	<link rel="stylesheet" th:href="@{/plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css}">
+	<!-- iCheck -->
+	<link rel="stylesheet" href="plugins/icheck-bootstrap/icheck-bootstrap.min.css">
 	<!-- JQVMap -->
-	<!-- <script src="plugins/jqvmap/jquery.vmap.min.js"></script>
-	<script src="plugins/jqvmap/maps/jquery.vmap.usa.js"></script> -->
-	<!-- jQuery Knob Chart -->
-	<script src="plugins/jquery-knob/jquery.knob.min.js"></script>
-	<!-- daterangepicker -->
-	<script src="plugins/moment/moment.min.js"></script>
-	<script src="plugins/daterangepicker/daterangepicker.js"></script>
-	<!-- Tempusdominus Bootstrap 4 -->
-	<script src="plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js"></script>
-	<!-- Summernote -->
-	<script src="plugins/summernote/summernote-bs4.min.js"></script>
+	<link rel="stylesheet" href="plugins/jqvmap/jqvmap.min.css">
+	<!-- Theme style -->
+	<link rel="stylesheet" href="dist/css/adminlte.min.css">
 	<!-- overlayScrollbars -->
-	<script src="plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js"></script>
-	<!-- AdminLTE App -->
-	<script src="dist/js/adminlte.js"></script>
-	<!-- AdminLTE dashboard demo (This is only for demo purposes) -->
-	<!-- <script src="dist/js/pages/dashboard.js"></script> -->
-	<!-- AdminLTE for demo purposes -->
-	<script src="dist/js/demo.js"></script>
+	<link rel="stylesheet" href="plugins/overlayScrollbars/css/OverlayScrollbars.min.css">
+	<!-- Daterange picker -->
+	<link rel="stylesheet" href="plugins/daterangepicker/daterangepicker.css">
+	<!-- summernote -->
+	<link rel="stylesheet" href="plugins/summernote/summernote-bs4.css">
+	<!-- Google Font: Source Sans Pro -->
+	<link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
 	<!-- SweetAlert2 -->
-	<script src="../../plugins/sweetalert2/sweetalert2.min.js"></script>
-	<!-- DataTables -->
-	
-	
+	<link rel="stylesheet" href="../../plugins/sweetalert2-theme-bootstrap-4/bootstrap-4.min.css">
+
+	<style>
+		input.parsley-success,
+		select.parsley-success,
+		textarea.parsley-success {
+			color: #468847;
+			background-color: #DFF0D8;
+			border: 1px solid #D6E9C6;
+		}
+
+
+		input.parsley-error,
+		select.parsley-error,
+		textarea.parsley-error {
+			color: #B94A48;
+			background-color: #F2DEDE;
+			border: 1px solid #EED3D7;
+		}
+
+		.parsley-errors-list {
+			margin: 2px 0 3px;
+			padding: 0;
+			list-style-type: none;
+			font-size: 0.9em;
+			line-height: 0.9em;
+			opacity: 0;
+			color: #B94A48;
+
+			transition: all .3s ease-in;
+			-o-transition: all .3s ease-in;
+			-moz-transition: all .3s ease-in;
+			-webkit-transition: all .3s ease-in;
+		}
+
+		.parsley-errors-list.filled {
+			opacity: 1;
+		}
+	</style>
+</head>
+
+<body class="hold-transition sidebar-mini layout-fixed">
+	<div class="wrapper">
+
+		<!-- Main Sidebar Container -->
+		<th:block layout:replace="~{fragment/sidebar}"></th:block>
+
+		<!-- Navbar Container -->
+		<th:block layout:replace="~{fragment/navbar}"></th:block>
+
+		<div layout:fragment="content-header" />
+		<div layout:fragment="content-body" />
+
+		<!-- Main content Container -->
+		<!-- <th:block layout:replace="~{content/form}"></th:block> -->
+
+		<!-- Footer Container -->
+		<th:block layout:replace="~{fragment/footer}"></th:block>
+
+	</div>
+</body>
+
+<!-- jQuery -->
+<script src="plugins/jquery/jquery.min.js"></script>
+<!-- jQuery UI 1.11.4 -->
+<script src="plugins/jquery-ui/jquery-ui.min.js"></script>
+<!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
+<script>
+	$.widget.bridge('uibutton', $.ui.button)
+</script>
+<!-- Bootstrap 4 -->
+<script src="plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+<!-- ChartJS -->
+<!-- <script src="plugins/chart.js/Chart.min.js"></script> -->
+<!-- Sparkline -->
+<script src="plugins/sparklines/sparkline.js"></script>
+<!-- JQVMap -->
+<!-- <script src="plugins/jqvmap/jquery.vmap.min.js"></script>
+	<script src="plugins/jqvmap/maps/jquery.vmap.usa.js"></script> -->
+<!-- jQuery Knob Chart -->
+<script src="plugins/jquery-knob/jquery.knob.min.js"></script>
+<!-- daterangepicker -->
+<script src="plugins/moment/moment.min.js"></script>
+<script src="plugins/daterangepicker/daterangepicker.js"></script>
+<!-- Tempusdominus Bootstrap 4 -->
+<script src="plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js"></script>
+<!-- Summernote -->
+<script src="plugins/summernote/summernote-bs4.min.js"></script>
+<!-- overlayScrollbars -->
+<script src="plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js"></script>
+<!-- AdminLTE App -->
+<script src="dist/js/adminlte.js"></script>
+<!-- AdminLTE dashboard demo (This is only for demo purposes) -->
+<!-- <script src="dist/js/pages/dashboard.js"></script> -->
+<!-- AdminLTE for demo purposes -->
+<script src="dist/js/demo.js"></script>
+<!-- SweetAlert2 -->
+<script src="../../plugins/sweetalert2/sweetalert2.min.js"></script>
+<!-- Parsley -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/parsley.js/2.9.1/parsley.min.js"></script>
+
+
 <th:block layout:fragment="add-scripts">
-		<script th:src="@{/js/form.js}"></script>
-	   	<!-- <script th:src="@{/plugins/chart.js/Chart.min.js}"></script> -->
-	    <script th:src="@{/dist/js/demo.js}"></script>
-	    <!-- <script th:src="@{/dist/js/pages/dashboard3.js}"></script> -->
-	    <script th:src="@{/plugins/datatables/jquery.dataTables.js}"></script>
-		<script th:src="@{/plugins/datatables-bs4/js/dataTables.bootstrap4.js}"></script>
+	<script th:src="@{/js/form.js}"></script>
+	<script th:src="@{/plugins/jquery-loadJSON/jquery.LoadJSON.js}"></script>
+	<!-- <script th:src="@{/plugins/chart.js/Chart.min.js}"></script> -->
+	<script th:src="@{/dist/js/demo.js}"></script>
+	<!-- <script th:src="@{/dist/js/pages/dashboard3.js}"></script> -->
+	<script th:src="@{/plugins/datatables/jquery.dataTables.js}"></script>
+	<script th:src="@{/plugins/datatables-bs4/js/dataTables.bootstrap4.js}"></script>
 </th:block>
-	
+
 </html>

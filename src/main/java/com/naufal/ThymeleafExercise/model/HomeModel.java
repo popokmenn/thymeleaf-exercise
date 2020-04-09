@@ -1,10 +1,32 @@
 package com.naufal.ThymeleafExercise.model;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+
+@Entity
+@Table(name = "T_HOME")
 public class HomeModel {
 
+	@Id
+	@Column(name = "ID_HOME")
+	@GeneratedValue
+	private Long id;
+
+	@Column(name = "NAME_HOME")
 	private String name;
+
+	@Column(name = "EMAIL_HOME")
 	private String email;
-	private HomeDetailModel detailModel;
+
+	@ManyToOne
+	private Kota kota;
+	
+	@ManyToOne
+	private Provinsi provinsi;
 
 	public String getName() {
 		return name;
@@ -22,12 +44,30 @@ public class HomeModel {
 		this.email = email;
 	}
 
-	public HomeDetailModel getDetailModel() {
-		return detailModel;
+	public Long getId() {
+		return id;
 	}
 
-	public void setDetailModel(HomeDetailModel detailModel) {
-		this.detailModel = detailModel;
+	public void setId(Long id) {
+		this.id = id;
 	}
+
+	public Kota getKota() {
+		return kota;
+	}
+
+	public void setKota(Kota kota) {
+		this.kota = kota;
+	}
+
+	public Provinsi getProvinsi() {
+		return provinsi;
+	}
+
+	public void setProvinsi(Provinsi provinsi) {
+		this.provinsi = provinsi;
+	}
+	
+	
 
 }
