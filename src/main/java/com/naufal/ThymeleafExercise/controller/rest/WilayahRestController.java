@@ -2,6 +2,8 @@ package com.naufal.ThymeleafExercise.controller.rest;
 
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -36,6 +38,10 @@ public class WilayahRestController {
 		return kotaRepository.findByIdProvinsi(idProvinsi);
 	}
 
-	
+	@GetMapping(value = "/provinsi/search")
+	public List<Provinsi> searchProvinsi(HttpServletRequest req) {
+		String keyword = req.getParameter("term");
+		return provinsiRepository.findByNmProvinsiIgnoreCaseContaining(keyword);
+	}
 
 }

@@ -221,8 +221,8 @@ var populateCombo = {
 					$("#provinsiSelect option[id=" + idProvinsi + "]").attr("selected", "selected");
 				}
 			},
-			error: function (err) {
-				console.log(err);
+			error: function (xhr) {
+				console.log(JSON.parse(xhr.responseText));
 			}
 		});
 	},
@@ -457,10 +457,59 @@ function createShopCard(namaKota, btnColor) {
 	document.getElementById("outerDiv").appendChild(colDiv).appendChild(smallBoxDiv);
 }
 
+function format(item) {
+	return item.name;
+}
+
+$('#mySelect2').on('select2:select', function (e) {
+	var idProv = $("#mySelect2").val();
+	console.log(idProv);
+	populateCombo.getAllKota(idProv, 0);
+});
+
 $(document).ready(function () {
 	tableBiodata.create();
 	populateCombo.getAllProvinsi();
+	//$('#mySelect2').select2();
 	//createShopCard();
+
+	$('#mySelect2').select2({
+		placeholder: "-- Search Provinsi --",
+		allowClear: true,
+		minimumInputLength: 1,
+		width: 'resolve',
+		delay: 250,
+		ajax: {
+			url: '/provinsi/search',
+			type: 'get',
+			dataType: 'json',
+			formatSelection: function (item) {
+				return item.ItemText
+			},
+			data: function (params) {
+
+				var queryParameters = {
+					term: params.term
+				}
+				return queryParameters;
+			},
+			processResults: function (data) {
+				return {
+					results: $.map(data, function (item) {
+						return {
+							text: item.nmProvinsi,
+							id: item.id
+						}
+					})
+				};
+			}
+		},
+		cache: true,
+		formatResult: format,
+		formatSelection: format
+
+	});
+
 	Toast = Swal.mixin({
 		toast: true,
 		position: 'top-end',

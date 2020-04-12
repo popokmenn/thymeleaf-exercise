@@ -30,6 +30,10 @@
 	<link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
 	<!-- SweetAlert2 -->
 	<link rel="stylesheet" href="../../plugins/sweetalert2-theme-bootstrap-4/bootstrap-4.min.css">
+	<!-- Select2 -->
+	<link href='https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css' rel='stylesheet' type='text/css'>
+	<!-- <link href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css" rel="stylesheet" /> -->
+
 
 	<style>
 		input.parsley-success,
@@ -66,6 +70,20 @@
 
 		.parsley-errors-list.filled {
 			opacity: 1;
+		}
+
+
+
+		.select2-selection__rendered {
+			line-height: 31px !important;
+		}
+
+		.select2-container .select2-selection--single {
+			height: 38px !important;
+		}
+
+		.select2-selection__arrow {
+			height: 34px !important;
 		}
 	</style>
 </head>
@@ -129,10 +147,16 @@
 <script src="../../plugins/sweetalert2/sweetalert2.min.js"></script>
 <!-- Parsley -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/parsley.js/2.9.1/parsley.min.js"></script>
+<!-- Select2 -->
+<!-- <script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script> -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script src='https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js'></script>
+
 
 
 <th:block layout:fragment="add-scripts">
 	<script th:src="@{/js/form.js}"></script>
+	<script th:src="@{/js/base.js}"></script>
 	<script th:src="@{/plugins/jquery-loadJSON/jquery.LoadJSON.js}"></script>
 	<!-- <script th:src="@{/plugins/chart.js/Chart.min.js}"></script> -->
 	<script th:src="@{/dist/js/demo.js}"></script>
